@@ -3,7 +3,7 @@ import os
 import pm4py 
 import pandas as pd
 from ...core.strace_analyzer import StraceAnalyzer
-from .io_preprocessor import IOPreprocessor
+from ...core.preprocessor import Preprocessor
 
 class IOMiner(StraceAnalyzer):
     def __init__(self,st_log_paths,io_calls):
@@ -28,7 +28,7 @@ class IOMiner(StraceAnalyzer):
     
     def preprocess(self,reuse=False):
          for st_path in self.st_log_paths: 
-              st = IOPreprocessor(st_path,self.io_calls)
+              st = Preprocessor(st_path,self.io_calls,'IO')
               case_id = os.path.basename(st_path).split('.st')[0]
               if not reuse:
                 st.prepare_csv_log(self.process_line)
