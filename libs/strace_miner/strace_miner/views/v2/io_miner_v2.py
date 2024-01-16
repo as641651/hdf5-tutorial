@@ -11,21 +11,15 @@ class IOMinerV2(StraceAnalyzer):
     def __init__(self,st_log_paths,io_calls):
         super().__init__(st_log_paths)
         self.io_calls = io_calls
-        self.line_reader = IOLineReaderV2()
-    
-    def process_line(self, line):
-        self.line_reader.set_line(line)
-        attrs = self.line_reader.parse_attrs()
-        call_attrs = self.line_reader.parse_call_attrs(attrs[0])
-        return attrs+call_attrs
+        self.slr = IOLineReaderV2()
     
     def preprocess(self, reuse=False):
         for st_path in self.st_log_paths: 
-              st = Preprocessor(st_path,self.io_calls,'IO')
+              st = Preprocessor(st_path,self.io_calls,self.slr,'IO')
               st.extra = ['bytes',]
               case_id = os.path.basename(st_path).split('.st')[0]
               if not reuse:
-                st.prepare_csv_log(self.process_line)
+                st.prepare_csv_log()
             
               self.st_logs[case_id] = st
     

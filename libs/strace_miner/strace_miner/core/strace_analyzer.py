@@ -1,4 +1,3 @@
-
 from abc import ABC, abstractmethod
 
 class StraceAnalyzer(ABC):
@@ -8,9 +7,6 @@ class StraceAnalyzer(ABC):
         self.summaries = {}
         self.el = None
 
-    @abstractmethod
-    def process_line(self,line):
-        pass
 
     @abstractmethod
     def preprocess(self,reuse=False):

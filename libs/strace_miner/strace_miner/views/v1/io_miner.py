@@ -4,6 +4,7 @@ import pm4py
 import pandas as pd
 from ...core.strace_analyzer import StraceAnalyzer
 from ...core.preprocessor import Preprocessor
+from ...core.strace_line_reader import StraceLineReader
 
 class IOMiner(StraceAnalyzer):
     def __init__(self,st_log_paths,io_calls):
@@ -12,26 +13,14 @@ class IOMiner(StraceAnalyzer):
         self.dfg = None
         self.dfg_im = None
         self.dfg_fm = None
-
-    def process_line(self, line):
-            ret = line.strip().split()
-            time = ret[0]
-            dur = ret[-1][1:-1]
-            try:
-                dur=float(dur)
-            except ValueError:
-                dur=0.0
-            call = ret[3].split('(')[0]
-            ret = [call,time,dur]
-            #print(ret)
-            return ret
+        self.slr = StraceLineReader()
     
     def preprocess(self,reuse=False):
          for st_path in self.st_log_paths: 
-              st = Preprocessor(st_path,self.io_calls,'IO')
+              st = Preprocessor(st_path,self.io_calls,self.slr,'IO')
               case_id = os.path.basename(st_path).split('.st')[0]
               if not reuse:
-                st.prepare_csv_log(self.process_line)
+                st.prepare_csv_log()
             
               self.st_logs[case_id] = st
 
@@ -54,5 +43,3 @@ class IOMiner(StraceAnalyzer):
     def view_dfg(self):
          if self.dfg:
               return pm4py.view_dfg(self.dfg,self.dfg_im,self.dfg_fm)
-         
-         

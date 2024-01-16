@@ -12,20 +12,15 @@ class IOMinerV3(StraceAnalyzer):
         self.io_calls = io_calls
         self.line_reader = line_reader
         self.activities_summary = {}
-    
-    def process_line(self, line):
-        self.line_reader.set_line(line)
-        attrs = self.line_reader.parse_attrs()
-        call_attrs = self.line_reader.parse_call_attrs(attrs[0])
-        return attrs+call_attrs
+
     
     def preprocess(self, reuse=False):
         for st_path in self.st_log_paths: 
-              st = Preprocessor(st_path,self.io_calls,'IO')
+              st = Preprocessor(st_path,self.io_calls,self.line_reader,'IO')
               st.extra = ['bytes','fs']
               case_id = os.path.basename(st_path).split('.st')[0]
               if not reuse:
-                st.prepare_csv_log(self.process_line)
+                st.prepare_csv_log()
             
               self.st_logs[case_id] = st
     
@@ -35,9 +30,8 @@ class IOMinerV3(StraceAnalyzer):
           grouped = df.groupby('concept')
           sum_by_call = dict(grouped['duration'].sum())      
           for call,dur in sum_by_call.items():
-               p_tot = (dur/st.total_time)*100.0
-               p_sys = (dur/st.sys_time)*100.0      
-               summary.append([call.split('\n'),dur,p_tot,p_sys])
+               p_tot = (dur/st.total_time)*100.0     
+               summary.append([call.split('\n'),dur,p_tot])
           return pd.DataFrame(summary,columns=st.stat_cols)
     
     def prepare_summaries_and_event_log(self):

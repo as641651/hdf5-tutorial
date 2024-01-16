@@ -1,27 +1,12 @@
 
-from ...core.strace_line_reader import StraceLineReader
+from ...views.v2.io_line_reader import IOLineReaderV2
 
-class IOLineReaderV3(StraceLineReader):
+class IOLineReaderV3(IOLineReaderV2):
     def __init__(self,prefixes=None,collapse=False):
         super().__init__()
         self.prefixes = prefixes
         self.collapse = collapse    
 
-    def get_bytes(self,call):
-        if not call in ['read','write']:
-            return '0'
-        pattern = r'{}\((.*?)\)[^)]*$'.format(call)
-        ret = self.match_pattern(pattern).split(',')
-        bytes = int(ret[-1])
-
-        if bytes < 1024*4:
-            val = '[<4KB]'
-        elif bytes < 1024*1024*4:
-            val = '[<4MB]'
-        else:
-            val = '[>4MB]'
-        
-        return val
     
     def _get_concise_path(self,path,file_name=False):
         components = path.split('/')
@@ -52,8 +37,16 @@ class IOLineReaderV3(StraceLineReader):
         return path                    
 
 
-
-    def parse_call_attrs(self,call):
-        bytes = self.get_bytes(call)
-        fs = self.get_fs(call)
+    def parse_call_attrs(self,call,unfinished,resumed,error=False):
+        if error or call not in ['read','write']:
+            if not unfinished:
+                return ['0', ' ']
+            else:
+                return [None,None]
+            
+        bytes = self.get_bytes(call,unfinished,resumed)
+        if not resumed:
+            fs = self.get_fs(call)
+        else:
+            fs = None
         return [bytes,fs]
