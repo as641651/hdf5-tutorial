@@ -111,11 +111,13 @@ class IOMinerV4(StraceAnalyzer):
                e_time = df_x['duration'].sum()
                p = (e_time/self.filtered_duration)*100.0
                mp = self._get_max_parallel(df_x)
-               ret.append([event.split('\n'),counts[event],mp,p])
+               ret.append([event,counts[event],mp,p])
           self.activities_summary = pd.DataFrame(ret,columns=['event','count','max_parallel','io_percent'])
 
     def print_events_summary(self):
-         print(self.activities_summary.to_string(index=False, float_format='{:,.2f}'.format))
+         df = self.activities_summary.copy()
+         df['event'] = df['event'].apply(lambda x: x.split('\n'))
+         print(df.to_string(index=False, float_format='{:,.2f}'.format))
          
 
     def prepare_dfg(self):
