@@ -4,7 +4,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name='io_miner',
+    name='strace_miner',
     version="0.1",
     description="A Tool kit to analyze strace logs",
     long_description=long_description,
