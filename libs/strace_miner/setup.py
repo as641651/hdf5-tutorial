@@ -4,7 +4,7 @@ with open("README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name='strace_miner',
+    name='io_miner',
     version="0.1",
     description="A Tool kit to analyze strace logs",
     long_description=long_description,
@@ -17,5 +17,10 @@ setup(
         "Programming Language :: Python :: 3",
     ],
     python_requires=">3",
+    install_requires=[
+        'pm4py==2.7.9.1',
+        'pandas',
+        'graphviz',
+    ],
 
 )
