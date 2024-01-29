@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class StraceAnalyzer(ABC):
+class Miner(ABC):
     def __init__(self,st_log_paths):
         self.st_log_paths = st_log_paths
         self.st_logs = {}

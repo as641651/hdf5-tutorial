@@ -1,13 +1,13 @@
 
-from ...core.strace_analyzer import StraceAnalyzer
-from ...core.preprocessor import Preprocessor
+from .miner import Miner
+from ..preprocessor.preprocessor import Preprocessor
 import os
 import pm4py
 import pandas as pd
 from datetime import timedelta
 
 
-class IOMinerV4(StraceAnalyzer):
+class IOMinerV4(Miner):
     def __init__(self,st_log_paths,io_calls,line_reader):
         super().__init__(st_log_paths)
         self.io_calls = io_calls
@@ -37,7 +37,9 @@ class IOMinerV4(StraceAnalyzer):
                df_['time'] = pd.to_datetime(df_['time'],format='%H:%M:%S.%f')
                df_['duration'] = df_['duration'].apply(lambda x: max(0.0,x))
                df_['end'] = df_['time'] + df_['duration'].apply(lambda x: timedelta(seconds=x)) 
-               df_['event'] = df_['call'] + '\n' + df_['bytes'].astype(str) + '\n' + df_['fs']
+               #df_['event'] = df_['call'] + '\n' + df_['bytes'].astype(str) + '\n' + df_['fs']
+               df_['event'] = df_.apply(lambda x: f"{x['call']}\n{str(x['bytes'])}\n{x['fs'].replace(',','_').replace(':','_')}", axis=1)
+
                df.append(df_)
           df = pd.concat(df,ignore_index=True)
 

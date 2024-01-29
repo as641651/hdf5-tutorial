@@ -1,7 +1,7 @@
 
-from ...views.v2.io_line_reader import IOLineReaderV2
+from ..preprocessor.io_line_reader_v1 import IOLineReaderV1
 
-class IOLineReaderV3(IOLineReaderV2):
+class IOLineReaderV2(IOLineReaderV1):
     def __init__(self,prefixes=None,collapse=False):
         super().__init__()
         self.prefixes = prefixes

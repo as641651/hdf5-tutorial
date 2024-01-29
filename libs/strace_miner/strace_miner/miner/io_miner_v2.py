@@ -1,17 +1,17 @@
-from ...core.strace_analyzer import StraceAnalyzer
-from ...core.preprocessor import Preprocessor
-from .io_line_reader import IOLineReaderV2
+from .miner import Miner
+from ..preprocessor.preprocessor import Preprocessor
+from ..preprocessor.io_line_reader_v1 import IOLineReaderV1
 
 import os
 import pm4py
 import pandas as pd
 
 
-class IOMinerV2(StraceAnalyzer):
+class IOMinerV2(Miner):
     def __init__(self,st_log_paths,io_calls):
         super().__init__(st_log_paths)
         self.io_calls = io_calls
-        self.slr = IOLineReaderV2()
+        self.slr = IOLineReaderV1()
     
     def preprocess(self, reuse=False):
         for st_path in self.st_log_paths: 

@@ -2,11 +2,11 @@
 import os
 import pm4py 
 import pandas as pd
-from ...core.strace_analyzer import StraceAnalyzer
-from ...core.preprocessor import Preprocessor
-from ...core.strace_line_reader import StraceLineReader
+from .miner import Miner
+from ..preprocessor.preprocessor import Preprocessor
+from ..preprocessor.strace_line_reader import StraceLineReader
 
-class IOMiner(StraceAnalyzer):
+class IOMinerV1(Miner):
     def __init__(self,st_log_paths,io_calls):
         super().__init__(st_log_paths)
         self.io_calls = io_calls

@@ -1,7 +1,7 @@
 
-from ...core.strace_line_reader import StraceLineReader
+from ..preprocessor.strace_line_reader import StraceLineReader
 
-class IOLineReaderV2(StraceLineReader):
+class IOLineReaderV1(StraceLineReader):
     def __init__(self):
         super().__init__()
 
